@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lee algorithm</title>
+</head>
+
+<body>
+    <h2>Lee algorithm</h2>
+    <script>
+        const R= 9
+        const C = 10
+
+        class Point {
+            constructor(x, y) {
+                this.x = x
+                this.y = y
+            }
+        }
+
+        class queueNode {
+            constructor(pt, distance) {
+                this.pt = pt;
+                this.distance = distance;
+            }
+        }
+
+        function isValid(row, col) {
+            return (row >= 0) && (row < R) && (col >= 0) && (col < C)
+        }
+
+        let rowNum = [-1, 0, 0, 1]
+        let colNum = [0, -1, 1, 0]
+
+        function lee(matrix, src, destination) {
+            if (matrix[src.x][src.y] != 1 || matrix[destination.x][destination.y] != 1)
+                return -1
+
+            let visited = new Array(R).fill(false).map(() => new Array(C).fill(false));
+
+            visited[src.x][src.y] = true
+
+            let q = []
+
+            let s = new queueNode(src, 0)
+            q.push(s)
+
+            while (q) {
+                let curr = q.shift()
+
+                let pt = curr.pt
+                if (pt.x == destination.x && pt.y == destination.y)
+                    return curr.distance
+
+                for (let i = 0; i < 4; i++) {
+                    let row = pt.x + rowNum[i]
+                    let col = pt.y + colNum[i]
+
+                    if (isValid(row, col) && matrix[row][col] == 1 && !visited[row][col]) {
+                        visited[row][col] = true
+                        let Adjcell = new queueNode(new Point(row, col),curr.distance + 1)
+                        q.push(Adjcell)
+                    }
+                }
+            }
+            return -1
+        }
+
+        function main() {
+
+            let matrix =[[1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
+            [1, 0, 1, 0, 1, 1, 1, 0, 1, 1],
+            [1, 1, 1, 0, 1, 1, 0, 1, 0, 1],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 0, 1, 1, 1, 0, 1, 0],
+            [1, 0, 1, 1, 1, 1, 0, 1, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
+            [1, 1, 0, 0, 0, 0, 1, 0, 0, 1]]
+
+            let source = new Point(0, 0)
+            let destination = new Point(3, 4)
+
+            let distance = lee(matrix, source, destination)
+
+            if (distance != -1)
+                console.log("Shortest Path is", distance)
+            else
+                console.log("Shortest Path doesn't exist")
+        }
+
+        main()
+    </script>
+
+    </script>
+</body>
+
+</html>
+
